@@ -1,6 +1,7 @@
 using MediatR;
 using Szlakomat.Parties.Application.Addresses.Common;
 using Szlakomat.Parties.Domain.Address;
+using Szlakomat.Parties.Domain.Address.Failures;
 using Szlakomat.Parties.Domain.Common;
 using Szlakomat.Parties.Domain.Model;
 
@@ -34,7 +35,7 @@ internal sealed class AddPartyAddressHandler
         var partyId = PartyId.Of(cmd.PartyId);
         if (_partyRepository.FindById(partyId) is null)
             return Task.FromResult(Result<AddressRelatedFailure, PartyAddressView>.FailureOf(
-                AddressRelatedFailure.AddressDefinitionFailed.DueToPolicyViolation(
+                (AddressRelatedFailure)AddressDefinitionFailed.DueToPolicyViolation(
                     "?", cmd.PartyId, "Party not found")));
 
         var addresses = _repository.FindFor(partyId) ?? Szlakomat.Parties.Domain.Address.Addresses.EmptyFor(partyId);

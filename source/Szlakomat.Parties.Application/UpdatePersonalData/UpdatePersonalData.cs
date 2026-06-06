@@ -21,8 +21,8 @@ internal sealed class UpdatePersonalDataHandler
         if (party is not Person p)
             return Task.FromResult(Result<PartyRelatedFailure, PartyView>.FailureOf(
                 party is null
-                    ? new PartyRelatedFailure.PartyNotFound(cmd.PartyId)
-                    : (PartyRelatedFailure)new PartyRelatedFailure.InvalidPartyType(cmd.PartyId, "PERSON")));
+                    ? (PartyRelatedFailure)new PartyNotFound(cmd.PartyId)
+                    : new InvalidPartyType(cmd.PartyId, "PERSON")));
 
         p.Update(PersonalData.Of(cmd.FirstName, cmd.LastName));
         _repository.Save(p);

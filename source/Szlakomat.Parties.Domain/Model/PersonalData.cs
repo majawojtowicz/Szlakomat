@@ -14,28 +14,6 @@ public record PersonalData
     }
 
     public static PersonalData Of(string firstName, string lastName) => new(firstName, lastName);
-
     public string FullName() => $"{FirstName} {LastName}";
-
-    public override string ToString() => FullName();
-}
-
-public record OrganizationName
-{
-    public string Name { get; }
-    public string? LegalForm { get; }
-
-    public OrganizationName(string? name, string? legalForm = null)
-    {
-        Guard.IsNotNullOrWhiteSpace(name);
-        Name = name;
-        LegalForm = legalForm;
-    }
-
-    public static OrganizationName Of(string name) => new(name);
-    public static OrganizationName Of(string name, string legalForm) => new(name, legalForm);
-
-    public string FullName() => LegalForm is not null ? $"{Name} {LegalForm}" : Name;
-
     public override string ToString() => FullName();
 }

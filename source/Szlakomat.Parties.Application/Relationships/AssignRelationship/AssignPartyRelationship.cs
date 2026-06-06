@@ -3,6 +3,8 @@ using Szlakomat.Parties.Application.Relationships.Common;
 using Szlakomat.Parties.Domain.Common;
 using Szlakomat.Parties.Domain.Model;
 using Szlakomat.Parties.Domain.Relationships;
+using Szlakomat.Parties.Domain.Relationships.Failures;
+using Szlakomat.Parties.Domain.Relationships.Policies;
 using Szlakomat.Parties.Domain.Roles;
 
 namespace Szlakomat.Parties.Application.Relationships.AssignRelationship;
@@ -42,19 +44,17 @@ internal sealed class AssignPartyRelationshipHandler
         var to = _partyRepository.FindById(toId);
 
         if (from is null)
-            return Fail(PartyRelationshipRelatedFailure.RelationshipDefinitionFailed
-                .DueToMissingParty(cmd.FromPartyId));
+            return Fail(RelationshipDefinitionFailed.DueToMissingParty(cmd.FromPartyId));
         if (to is null)
-            return Fail(PartyRelationshipRelatedFailure.RelationshipDefinitionFailed
-                .DueToMissingParty(cmd.ToPartyId));
+            return Fail(RelationshipDefinitionFailed.DueToMissingParty(cmd.ToPartyId));
 
         var fromRole = Role.Of(cmd.FromRole);
         var toRole = Role.Of(cmd.ToRole);
-        var name = RelationshipName.Of(cmd.RelationshipName);
+        var name = Domain.Relationships.RelationshipName.Of(cmd.RelationshipName);
 
         if (!_policy.CanDefine(from, fromRole, to, toRole, name))
-            return Fail(PartyRelationshipRelatedFailure.RelationshipDefinitionFailed
-                .DueToPolicyViolation(cmd.FromPartyId, cmd.ToPartyId, _policy.ViolationReason));
+            return Fail(RelationshipDefinitionFailed.DueToPolicyViolation(
+                cmd.FromPartyId, cmd.ToPartyId, _policy.ViolationReason));
 
         var rel = PartyRelationship.Of(fromId, fromRole, toId, toRole, name);
         _repository.Save(rel);

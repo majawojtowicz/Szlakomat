@@ -4,6 +4,7 @@ using Szlakomat.Parties.Domain.Common;
 using Szlakomat.Parties.Domain.Facade;
 using Szlakomat.Parties.Domain.Model;
 using Szlakomat.Parties.Domain.Roles;
+using Szlakomat.Parties.Domain.Roles.Policies;
 
 namespace Szlakomat.Parties.Application.AddRole;
 
@@ -25,12 +26,12 @@ internal sealed class AddRoleHandler : IRequestHandler<AddRole, Result<PartyRela
         var party = _repository.FindByIdValue(cmd.PartyId);
         if (party is null)
             return Task.FromResult(Result<PartyRelatedFailure, PartyView>.FailureOf(
-                new PartyRelatedFailure.PartyNotFound(cmd.PartyId)));
+                new PartyNotFound(cmd.PartyId)));
 
         var role = Role.Of(cmd.Role);
         if (!_policy.Allows(party, role))
             return Task.FromResult(Result<PartyRelatedFailure, PartyView>.FailureOf(
-                new PartyRelatedFailure.RolePolicyViolation(cmd.PartyId, role.Name, _policy.ViolationReason)));
+                new RolePolicyViolation(cmd.PartyId, role.Name, _policy.ViolationReason)));
 
         party.Add(role);
         _repository.Save(party);

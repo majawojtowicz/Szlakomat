@@ -18,7 +18,7 @@ internal static class AddressMapper
 {
     public static PartyAddressView ToView(IAddress address)
     {
-        var d = (GeoAddress.GeoAddressDetails)address.Details;
+        var d = (GeoAddressDetails)address.Details;
         return new PartyAddressView(
             address.Id.AsString(),
             address.PartyId.AsString(),
