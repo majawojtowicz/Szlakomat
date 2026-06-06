@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Szlakomat.Parties.Domain\Szlakomat.Parties.Domain.csproj" />
+    <PackageReference Include="MediatR" Version="12.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Szlakomat.Parties.Infrastructure" />
+    <InternalsVisibleTo Include="Szlakomat.Products.Api" />
+  </ItemGroup>
+</Project>
